@@ -1,0 +1,12 @@
+# Define Goal
+Header header
+string[] event_name
+string[] query
+---
+# Define Result
+bool result
+string error_msg
+string query_result
+---
+# No Feedback
+bool is_waiting

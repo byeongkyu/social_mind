@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package format="2">
+    <name>working_memory</name>
+    <version>0.0.0</version>
+    <description>Persistent storage of Social Mind</description>
+
+    <author email="byeongkyu@gmail.com">Byeong-Kyu Ahn</author>
+    <maintainer email="byeongkyu@gmail.com">Byeong-Kyu Ahn</maintainer>
+
+    <license>BSD</license>
+    <url type="repository">https://stash.auckland.ac.nz/users/bahn915/repos/social_mind</url>
+
+    <buildtool_depend>catkin</buildtool_depend>
+    <depend>mongodb-server</depend>
+    <depend>warehouse_ros</depend>
+    <depend>python-pymongo</depend>
+    <depend>message_generation</depend>
+    <depend>mhri_msgs</depend>
+    <exec_depend>message_runtime</exec_depend>
+
+    <export></export>
+</package>

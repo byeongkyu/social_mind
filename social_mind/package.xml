@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>social_mind</name>
+  <version>0.0.0</version>
+  <description>Meta package that contains all essential package of social_mind</description>
+
+  <maintainer email="byeongkyu@gmail.com">Byeong-Kyu Ahn</maintainer>
+  <author email="byeongkyu@gmail.com">Byeong-Kyu Ahn</author>
+
+  <license>BSD</license>
+  <url type="repository">https://stash.auckland.ac.nz/users/bahn915/repos/social_mind</url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <exec_depend>mind_msgs</exec_depend>
+  <exec_depend>working_memory</exec_depend>
+  <exec_depend>events_multiplexer</exec_depend>
+  <exec_depend>motion_arbiter</exec_depend>
+  <exec_depend>motion_renderer</exec_depend>
+  <exec_depend>behaviors</exec_depend>
+
+  <export>
+  </export>
+</package>

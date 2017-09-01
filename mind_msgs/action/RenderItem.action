@@ -1,0 +1,6 @@
+string name
+string data
+---
+bool result
+---
+bool is_rendering

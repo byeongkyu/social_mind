@@ -1,0 +1,17 @@
+<library path="src">
+	<class name="FakeMotionRenderer" type="motion_renderer.fake_motion_renderer_gui.FakeMotionRendererPlugin" base_class_type="rqt_gui_py::Plugin">
+	<description>
+		Display fake_renderer of sHRI
+	</description>
+	<qtgui>
+	  <group>
+		<label>sHRI Tools</label>
+		<icon type="theme">folder</icon>
+		<statustip>Plugins related to sHRI tools.</statustip>
+	  </group>
+	  <label>Fake Motion Renderer</label>
+	  <icon type="theme">utilities-system-monitor</icon>
+	  <statustip>A Python GUI plugin for viewing the dialog of sHRI framework.</statustip>
+	</qtgui>
+  </class>
+</library>

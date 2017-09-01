@@ -1,0 +1,2 @@
+geometry_msgs/PointStamped target_point
+float32 max_speed

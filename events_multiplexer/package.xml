@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package format="2">
+    <name>events_multiplexer</name>
+    <version>0.0.0</version>
+    <description>The events_multiplexer package</description>
+
+    <author email="byeongkyu@gmail.com">Byeong-Kyu Ahn</author>
+    <maintainer email="byeongkyu@gmail.com">Byeong-Kyu Ahn</maintainer>
+
+    <license>BSD</license>
+    <url type="repository">https://stash.auckland.ac.nz/users/bahn915/repos/social_mind</url>
+
+    <buildtool_depend>catkin</buildtool_depend>
+    <depend>mind_msgs</depend>
+    <depend>rospy</depend>
+    <depend>working_memory</depend>
+
+    <export>
+    </export>
+</package>

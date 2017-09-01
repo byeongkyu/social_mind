@@ -1,0 +1,6 @@
+string perception_name
+string query
+string[] data
+---
+string data
+bool result

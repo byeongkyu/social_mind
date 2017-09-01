@@ -1,0 +1,23 @@
+<launch>
+    <arg name="project_path"/>
+    <arg name="overwrite" default="false"/>
+
+    <include file="$(find working_memory)/launch/bringup_mind.launch">
+        <arg name="mind_path" value="$(arg project_path)/mind" />
+        <arg name="overwrite" value="$(arg overwrite)" />
+    </include>
+
+    <node name="events_multiplexer" type="multiplexer_node.py" pkg="events_multiplexer" output="screen"/>
+
+    <node name="motion_arbiter" type="motion_arbiter.py" pkg="motion_arbiter" output="screen" />
+    <node name="motion_renderer" type="motion_renderer.py" pkg="motion_renderer" output="screen" />
+
+    <include file="$(find motion_renderer)/launch/bringup_renderer.launch">
+        <arg name="fake_render_speech" default="true" />
+        <arg name="fake_render_gesture" default="true" />
+        <arg name="fake_render_facial_expression" default="true" />
+        <arg name="fake_render_sound" default="true" />
+    </include>
+
+    <node name="gaze" type="gaze_node.py" pkg="behaviors" output="screen" />
+</launch>

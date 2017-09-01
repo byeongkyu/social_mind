@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package format="2">
+    <name>mind_msgs</name>
+    <version>0.0.0</version>
+    <description>The package includes ROS message/service/action for Social Mind</description>
+
+    <maintainer email="byeongkyu@gmail.com">Byeong-Kyu Ahn</maintainer>
+    <author email="byeongkyu@gmail.com">Byeong-Kyu Ahn</author>
+
+    <license>BSD</license>
+    <url type="repository">https://stash.auckland.ac.nz/users/bahn915/repos/social_mind</url>
+
+    <buildtool_depend>catkin</buildtool_depend>
+    <depend>std_msgs</depend>
+    <depend>message_generation</depend>
+    <depend>geometry_msgs</depend>    
+
+    <export>
+    </export>
+</package>

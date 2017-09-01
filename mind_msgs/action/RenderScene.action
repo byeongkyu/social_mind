@@ -1,0 +1,5 @@
+string render_scene
+---
+bool result
+---
+bool is_rendering

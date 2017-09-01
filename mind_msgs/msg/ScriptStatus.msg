@@ -1,0 +1,4 @@
+string last_match
+string current_topic
+string topic_structure
+string user_vars
