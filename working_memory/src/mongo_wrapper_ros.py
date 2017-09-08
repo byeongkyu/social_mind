@@ -58,7 +58,7 @@ if __name__ == '__main__':
         print_help_message()
         sys.exit()
 
-    rospy.init_node('social_warehouse')
+    rospy.init_node('working_memory')
     path_param = rospy.get_param('~mind_path' , '/tmp/db')
     dbpath = path.expanduser(path_param)
     dbpath = os.path.abspath(dbpath)

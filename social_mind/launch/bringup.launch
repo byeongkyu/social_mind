@@ -2,6 +2,12 @@
     <arg name="project_path"/>
     <arg name="overwrite" default="false"/>
 
+    <arg name="fake_render_speech" default="true" />
+    <arg name="fake_render_gesture" default="true" />
+    <arg name="fake_render_screen" default="true" />
+    <arg name="fake_render_facial_expression" default="true" />
+    <arg name="fake_render_sound" default="true" />
+
     <include file="$(find working_memory)/launch/bringup_mind.launch">
         <arg name="mind_path" value="$(arg project_path)/mind" />
         <arg name="overwrite" value="$(arg overwrite)" />
@@ -13,10 +19,10 @@
     <node name="motion_renderer" type="motion_renderer.py" pkg="motion_renderer" output="screen" />
 
     <include file="$(find motion_renderer)/launch/bringup_renderer.launch">
-        <arg name="fake_render_speech" default="true" />
-        <arg name="fake_render_gesture" default="true" />
-        <arg name="fake_render_facial_expression" default="true" />
-        <arg name="fake_render_sound" default="true" />
+        <arg name="fake_render_speech" value="$(arg fake_render_speech)" />
+        <arg name="fake_render_gesture" value="$(arg fake_render_gesture)" />
+        <arg name="fake_render_facial_expression" value="$(arg fake_render_facial_expression)" />
+        <arg name="fake_render_sound" value="$(arg fake_render_sound)" />
     </include>
 
     <node name="gaze" type="gaze_node.py" pkg="behaviors" output="screen" />
