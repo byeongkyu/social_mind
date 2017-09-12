@@ -5,8 +5,9 @@ import os
 import yaml
 import json
 import rospy
-from mhri_msgs.msg import ForwardingEvent
-from mhri_msgs.srv import WriteData, WriteDataRequest, ReadData, RegisterData, RegisterDataRequest
+from importlib import import_module
+from mind_msgs.msg import ForwardingEvent
+from mind_msgs.srv import WriteData, WriteDataRequest, ReadData, RegisterData, RegisterDataRequest
 from std_msgs.msg import Empty
 
 
@@ -40,9 +41,25 @@ class PerceptionBase(object):
 
                 self.register_data_to_memory(memory_name, item, self.conf_data[item]['data'])
 
+
+        try:
+            for item in self.conf_data.keys():
+                callback_conf = self.conf_data[item]['callback_config']
+                for k, v in callback_conf.items():
+                    topic_name = k
+                    data = v[0].split('/')
+
+                    msg_class = getattr(import_module(data[0]), data[1])
+                    handle_function = getattr(self, v[1])
+                    rospy.Subscriber(topic_name, msg_class, handle_function)
+
+        except AttributeError:
+            raise NotImplementedError('Handle function \033[95m %s \033[0m does not implement.'%v[1])
+
         self.is_enable_perception = True
         rospy.Subscriber('%s/start'%rospy.get_name(), Empty, self.handle_start_perception)
         rospy.Subscriber('%s/stop'%rospy.get_name(), Empty, self.handle_stop_perception)
+        
 
         self.pub_event = rospy.Publisher('forwarding_event', ForwardingEvent, queue_size=10)
         rospy.loginfo('\033[94m[%s]\033[0m initialize perception_base done...'%rospy.get_name())

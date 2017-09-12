@@ -79,7 +79,7 @@ class MotionRenderer:
 
 
     def handle_render_say_done(self, state, result):
-        self.is_rendering['say'] = False
+        self.is_rendering['say'] = False        
     def handle_render_say_start(self):
         self.is_rendering['say'] = True
     def handle_render_sm_done(self, state, result):
@@ -94,7 +94,6 @@ class MotionRenderer:
         self.is_rendering['sound'] = False
     def handle_render_sound_start(self):
         self.is_rendering['sound'] = True
-
 
     def preempt_callback(self):
         rospy.logwarn('\033[94m[%s]\033[0m rendering preempted.'%rospy.get_name())
