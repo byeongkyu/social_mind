@@ -3,7 +3,7 @@
 
 Social HRI Software Framework (mhri) is the modularized HRI software framework for developing the social robots. The framework is modularized by each function such as sensory perception, social perception, social mind, dialog, motion arbiter and motion renderer. Each module sends and receives the information (event, data) with each other using the ROS topic, service and actionlib.
 
-<center><a href="./doc_social_mind_block_diagram.png"><img src="./doc/social_mind_block_diagram.png" width="500px"></a></center>
+<center><a href="./doc/social_mind_block_diagram.png"><img src="./doc/social_mind_block_diagram.png" width="500px"></a></center>
 
 
 ## Topics
@@ -17,6 +17,7 @@ Social HRI Software Framework (mhri) is the modularized HRI software framework f
         string[] events
         string[] data
 
+<br/>
   * Example: Speech Recognition
 
         header:
@@ -28,7 +29,7 @@ Social HRI Software Framework (mhri) is the modularized HRI software framework f
         recognized_word: Hello
         events: ['speech_recognized']
         data: ['{"confidence": 1.0, "recognized_word": "Hello"}']
-
+<br/>
   * Example: Button Input
 
         header:
@@ -41,13 +42,14 @@ Social HRI Software Framework (mhri) is the modularized HRI software framework f
         events: ['button_pressed']
         data: ['{"text": "yes"}']
 
+<br/>
 ### /reply [Reply.msg] received from Scheduler Engine
 
 * Type
 
         Header header
         string reply
-
+<br/>
 * Format
 
   * Say
@@ -59,7 +61,7 @@ Social HRI Software Framework (mhri) is the modularized HRI software framework f
             nsecs:
             frame_id: ''
         reply: "Hello. My name is Silbot"
-
+<br/>
   * Say with gesture by tag
 
         header:
@@ -69,7 +71,7 @@ Social HRI Software Framework (mhri) is the modularized HRI software framework f
             nsecs:
             frame_id: ''
         reply: "<sm=tag:neutral> Hello. My name is Silbot"
-
+<br/>
   * Say with gesture by specific motion
 
         header:
@@ -89,7 +91,7 @@ Social HRI Software Framework (mhri) is the modularized HRI software framework f
             nsecs:
             frame_id: ''
         reply: "<expression=happiness> Hello. My name is Silbot"
-
+<br/>
 _Tag and Gesture List for silbot3 can find in this file: [motions.yaml]_
 
 
