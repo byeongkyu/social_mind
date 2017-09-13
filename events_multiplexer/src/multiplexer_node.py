@@ -7,7 +7,6 @@ from mind_msgs.msg import ForwardingEvent, RaisingEvents
 from mind_msgs.srv import ReadData, ReadDataRequest
 import Queue
 
-
 class MultiplexerNode:
     def __init__(self):
         rospy.init_node('multiplexer_node', anonymous=False)
@@ -19,6 +18,7 @@ class MultiplexerNode:
         self.pub_rasing_event = rospy.Publisher('raising_events', RaisingEvents, queue_size=10)
 
         self.events_queue = Queue.Queue()
+        self.data_queue = Queue.Queue()
         self.recognized_words_queue = Queue.Queue()
 
         event_period = rospy.get_param('~event_period', 0.5)
@@ -30,17 +30,20 @@ class MultiplexerNode:
 
     def handle_social_events(self, msg):
         if msg.event == 'speech_recognized':
-            req = ReadDataRequest()
-            req.perception_name = 'speech_recognition'
-            req.query = '{}'
-            req.data.append('recognized_word')
+            # req = ReadDataRequest()
+            # req.perception_name = 'speech_recognition'
+            # req.query = '{}'
+            # req.data.append('recognized_word')
+            #
+            # result = self.rd_event_mem(req)
+            # if result.result:
+            #     result = json.loads(result.data)
+            #     self.recognized_words_queue.put(result['recognized_word'])
+            parse_data = json.loads(msg.data)
+            self.recognized_words_queue.put(parse_data['recognized_word'])
 
-            result = self.rd_event_mem(req)
-            if result.result:
-                result = json.loads(result.data)
-                self.recognized_words_queue.put(result['recognized_word'])
-        else:
-            self.events_queue.put(msg.event)
+        self.events_queue.put(msg.event)
+        self.data_queue.put(msg.data)
 
 
     def handle_trigger_events(self, event):
@@ -59,7 +62,9 @@ class MultiplexerNode:
         while True:
             try:
                 event_data.events.append(self.events_queue.get_nowait())
+                event_data.data.append(self.data_queue.get_nowait())
                 self.events_queue.task_done()
+                self.data_queue.task_done()
             except Queue.Empty, e:
                 break
 

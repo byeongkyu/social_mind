@@ -59,7 +59,7 @@ class PerceptionBase(object):
         self.is_enable_perception = True
         rospy.Subscriber('%s/start'%rospy.get_name(), Empty, self.handle_start_perception)
         rospy.Subscriber('%s/stop'%rospy.get_name(), Empty, self.handle_stop_perception)
-        
+
 
         self.pub_event = rospy.Publisher('forwarding_event', ForwardingEvent, queue_size=10)
         rospy.loginfo('\033[94m[%s]\033[0m initialize perception_base done...'%rospy.get_name())
@@ -73,7 +73,7 @@ class PerceptionBase(object):
         self.is_enable_perception = False
         rospy.loginfo('%s is disabled...'%rospy.get_name())
 
-    def raise_event(self, perception_item, event):
+    def raise_event(self, perception_item, event, data):
         if not perception_item in self.conf_data.keys():
             rospy.logwarn('<%s> perception is not member of perception configuration...'%perception_item)
             return
@@ -87,6 +87,7 @@ class PerceptionBase(object):
         msg = ForwardingEvent()
         msg.header.stamp = rospy.Time.now()
         msg.event = event
+        msg.data = json.dumps(data)
         msg.by = perception_item
 
         self.pub_event.publish(msg)
