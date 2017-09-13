@@ -17,7 +17,6 @@ Social HRI Software Framework (mhri) is the modularized HRI software framework f
         string[] events
         string[] data
 
-<br/>
   * Example: Speech Recognition
 
         header:
@@ -29,7 +28,7 @@ Social HRI Software Framework (mhri) is the modularized HRI software framework f
         recognized_word: Hello
         events: ['speech_recognized']
         data: ['{"confidence": 1.0, "recognized_word": "Hello"}']
-<br/>
+
   * Example: Button Input
 
         header:
@@ -42,14 +41,14 @@ Social HRI Software Framework (mhri) is the modularized HRI software framework f
         events: ['button_pressed']
         data: ['{"text": "yes"}']
 
-<br/>
+
 ### /reply [Reply.msg] received from Scheduler Engine
 
 * Type
 
         Header header
         string reply
-<br/>
+
 * Format
 
   * Say
@@ -61,7 +60,7 @@ Social HRI Software Framework (mhri) is the modularized HRI software framework f
             nsecs:
             frame_id: ''
         reply: "Hello. My name is Silbot"
-<br/>
+
   * Say with gesture by tag
 
         header:
@@ -71,7 +70,7 @@ Social HRI Software Framework (mhri) is the modularized HRI software framework f
             nsecs:
             frame_id: ''
         reply: "<sm=tag:neutral> Hello. My name is Silbot"
-<br/>
+
   * Say with gesture by specific motion
 
         header:
@@ -91,7 +90,8 @@ Social HRI Software Framework (mhri) is the modularized HRI software framework f
             nsecs:
             frame_id: ''
         reply: "<expression=happiness> Hello. My name is Silbot"
-<br/>
+
+
 _Tag and Gesture List for silbot3 can find in this file: [motions.yaml]_
 
 
