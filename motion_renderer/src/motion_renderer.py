@@ -155,6 +155,9 @@ class MotionRenderer:
                 item_goal.name = scene_item_sorted_by_time[i]
                 item_goal.data = render_scene[scene_item_sorted_by_time[i]]['render']
 
+                # if item_goal.data == '':
+                #     continue
+
                 self.render_client[scene_item_sorted_by_time[i]].send_goal(
                     goal=item_goal,
                     done_cb=self.cb_done[scene_item_sorted_by_time[i]],

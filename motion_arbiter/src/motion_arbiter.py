@@ -146,11 +146,12 @@ class MotionArbiter:
 
             scene_item = SceneQueueData()
             scene_item.br['time'] = recv_reply[1]
-            scene_item.sm['render'] = 'tag:neutral'
-            scene_item.sm['offset'] = 0.0
 
-            scene_item.expression['render'] ='neutral'
-            scene_item.expression['offset'] = 0.0
+            # scene_item.sm['render'] = 'tag:neutral'
+            # scene_item.sm['offset'] = 0.0
+
+            # scene_item.expression['render'] ='neutral'
+            # scene_item.expression['offset'] = 0.0
 
             scene_item.pointing = {}
             scene_item.gaze = {}
@@ -194,8 +195,13 @@ class MotionArbiter:
                 elif tag[0].strip() == 'log':
                     scene_item.log = tag[1].strip()
 
-            scene_item.say['render'] = tag_msg.strip()
-            scene_item.say['offset'] = 0.0
+            if tag_msg.strip() != '':
+                scene_item.say['render'] = tag_msg.strip()
+                scene_item.say['offset'] = 0.0
+
+            if tag_msg.strip() != '' and scene_item.sm == {}:
+                scene_item.sm['render'] = 'tag:neutral'
+                scene_item.sm['offset'] = 0.0
 
             if scene_item.pointing != {}:
                 scene_item.sm = {}
@@ -259,9 +265,10 @@ class MotionArbiter:
                     except ValueError:
                         scene_dict['sm'] = {'render': 'gesture=tag:neutral', 'offset': scene_item.pointing['offset']}
                 else:
-                    scene_dict['sm'] = {}
-                    scene_dict['sm']['render'] = 'gesture=' + scene_item.sm['render']
-                    scene_dict['sm']['offset'] = scene_item.sm['offset']
+                    if scene_item.sm != {}:
+                        scene_dict['sm'] = {}
+                        scene_dict['sm']['render'] = 'gesture=' + scene_item.sm['render']
+                        scene_dict['sm']['offset'] = scene_item.sm['offset']
 
                 if scene_item.gaze != {}:
                     target_data = scene_item.gaze['render'].split(':')

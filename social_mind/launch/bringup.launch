@@ -4,7 +4,7 @@
 
     <arg name="fake_render_speech" default="true" />
     <arg name="fake_render_gesture" default="true" />
-    <arg name="fake_render_screen" default="false" />
+    <arg name="fake_render_screen" default="true" />
     <arg name="fake_render_facial_expression" default="true" />
     <arg name="fake_render_sound" default="true" />
 
