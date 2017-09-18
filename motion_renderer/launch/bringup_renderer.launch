@@ -16,6 +16,9 @@
     <node name="fake_render_facial_expression" type="fake_renderer.py" pkg="motion_renderer" output="screen" if="$(arg fake_render_facial_expression)">
         <param name="action_name" value="render_facial_expression" />
     </node>
+    <node name="fake_render_screen" type="fake_renderer.py" pkg="motion_renderer" output="screen" if="$(arg fake_render_screen)">
+        <param name="action_name" value="render_screen" />
+    </node>
     <node name="fake_render_sound" type="fake_renderer.py" pkg="motion_renderer" output="screen" if="$(arg fake_render_sound)">
         <param name="action_name" value="render_sound" />
     </node>

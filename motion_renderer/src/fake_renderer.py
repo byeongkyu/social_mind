@@ -113,6 +113,10 @@ class FakeMotionRender:
             rospy.loginfo('\033[94m[%s]\033[0m rendering speech [%s]...'%(rospy.get_name(), goal.data))
             loop_count = 40
 
+        if 'render_screen' in rospy.get_name():
+            rospy.loginfo('\033[94m[%s]\033[0m rendering screen [%s]...'%(rospy.get_name(), goal.data))
+            loop_count = 40
+
         if 'render_facial_expression' in rospy.get_name():
             rospy.loginfo('\033[94m[%s]\033[0m rendering expression [%s]...'%(rospy.get_name(), goal.data))
             loop_count = 5

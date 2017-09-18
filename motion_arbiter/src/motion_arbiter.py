@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#-*- encoding: utf8 -*-
+# -*- encoding: utf8 -*-
 
 import rospy
 import actionlib
@@ -11,7 +11,7 @@ from threading import Thread
 
 from std_msgs.msg import String, Bool, Empty
 from mind_msgs.msg import Reply
-from mind_msgs.msg import RenderSceneAction, RenderSceneGoal, RenderItemGoal  # , GazeFocusing
+from mind_msgs.msg import RenderSceneAction, RenderSceneGoal, RenderItemGoal
 from mind_msgs.srv import ReadData, ReadDataRequest
 from mind_msgs.msg import LogItem
 
@@ -25,6 +25,7 @@ class OverridingType:
     CROSS = 1
     OVERRIDE = 2
 
+
 class SceneQueueData:
     sm = {}
     say = {}
@@ -32,6 +33,7 @@ class SceneQueueData:
     pointing = {}
     sound = {}
     expression = {}
+    screen = {}
     br = {}
     log = ''
 
@@ -42,21 +44,24 @@ class SceneQueueData:
         self.pointing = {}
         self.sound = {}
         self.expression = {}
+        self.screen = {}
         self.br = {}
         self.log = ''
 
     def __str__(self):
-        rospy.loginfo('='*10)
+        rospy.loginfo('=' * 10)
         print ' [SM]        : ', self.sm
         print ' [SAY]       : ', self.say
         print ' [GAZE]      : ', self.gaze
         print ' [POINTING]  : ', self.pointing
         print ' [SOUND]     : ', self.sound
         print ' [EXPRESSION]: ', self.expression
+        print ' [SCREEN]    : ', self.screen
         print ' [BR]        : ', self.br
         print ' [LOG]       : ', self.log
-        rospy.loginfo('-'*10)
+        rospy.loginfo('-' * 10)
         return ''
+
 
 class MotionArbiter:
 
@@ -69,7 +74,7 @@ class MotionArbiter:
             rospy.wait_for_service('social_events_memory/read_data')
             self.rd_memory['social_events_memory'] = rospy.ServiceProxy('social_events_memory/read_data', ReadData)
             rospy.wait_for_service('environmental_memory/read_data')
-            self.rd_memory['environmental_memory'] = rospy.ServiceProxy('environmental_memory/read_data', ReadData)            
+            self.rd_memory['environmental_memory'] = rospy.ServiceProxy('environmental_memory/read_data', ReadData)
         except rospy.exceptions.ROSInterruptException as e:
             rospy.logerr(e)
             quit()
@@ -152,7 +157,7 @@ class MotionArbiter:
             scene_item.emotion = {}
             overriding = OverridingType.QUEUE
 
-            tag_msg =  recv_reply[0]
+            tag_msg = recv_reply[0]
             for tag in tags:
                 for other_tag in tags:
                     if other_tag != tag:
@@ -178,6 +183,9 @@ class MotionArbiter:
                 elif tag[0].strip() == 'expression':
                     scene_item.expression['render'] = tag[1].strip()
                     scene_item.expression['offset'] = float(index / SIZE_FOR_CHARACTER * TIME_FOR_CHARACTER)
+                elif tag[0].strip() == 'screen':
+                    scene_item.screen['render'] = tag[1].strip()
+                    scene_item.screen['offset'] = float(index / SIZE_FOR_CHARACTER * TIME_FOR_CHARACTER)
                 elif tag[0].strip() == 'sound':
                     scene_item.sound['render'] = tag[1].strip()
                     scene_item.sound['offset'] = float(index / SIZE_FOR_CHARACTER * TIME_FOR_CHARACTER)
@@ -211,6 +219,7 @@ class MotionArbiter:
                     self.scene_queue.queue.clear()
                 self.scene_queue.put(scene_item)
 
+            print scene_item
 
     def handle_scene_queue(self):
         rospy.wait_for_service('social_events_memory/read_data')
@@ -282,6 +291,7 @@ class MotionArbiter:
                 gaze = {}
                 sound = {}
                 expression = {}
+                screen = {}
                 br = {}
                 log = ''
                 '''
@@ -295,10 +305,10 @@ class MotionArbiter:
                     msg_log_item.header.stamp = rospy.Time.now()
                     self.pub_log_item.publish(msg_log_item)
 
-
                 scene_dict['say'] = scene_item.say
                 scene_dict['sound'] = scene_item.sound
                 scene_dict['expression'] = scene_item.expression
+                scene_dict['screen'] = scene_item.screen
                 scene_dict['gaze'] = scene_item.gaze
                 scene_dict['br'] = scene_item.br
 
@@ -329,7 +339,6 @@ class MotionArbiter:
         self.pub_stop_speech_recognizer.publish()
         self.pub_start_robot_speech.publish()
 
-
     def render_feedback(self, feedback):
         rospy.loginfo('\033[91m[%s]\033[0m scene rendering feedback...'%rospy.get_name())
 
@@ -342,6 +351,7 @@ class MotionArbiter:
         rospy.sleep(0.5)
         self.pub_start_speech_recognizer.publish()
         self.pub_stop_robot_speech.publish()
+
 
 if __name__ == '__main__':
     rospy.init_node('motion_arbiter', anonymous=False)
