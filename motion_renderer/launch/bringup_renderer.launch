@@ -5,6 +5,7 @@
     <arg name="fake_render_facial_expression" />
     <arg name="fake_render_sound" />
     <arg name="fake_render_screen" />
+    <arg name="fake_render_mobility" />
 
     <!-- Start the fake motion_renderer if user not ready for actual motion_renderer -->
     <node name="fake_render_speech" type="fake_renderer.py" pkg="motion_renderer" output="screen" if="$(arg fake_render_speech)">
@@ -18,6 +19,9 @@
     </node>
     <node name="fake_render_screen" type="fake_renderer.py" pkg="motion_renderer" output="screen" if="$(arg fake_render_screen)">
         <param name="action_name" value="render_screen" />
+    </node>
+    <node name="fake_render_mobility" type="fake_renderer.py" pkg="motion_renderer" output="screen" if="$(arg fake_render_mobility)">
+        <param name="action_name" value="render_mobility" />
     </node>
     <node name="fake_render_sound" type="fake_renderer.py" pkg="motion_renderer" output="screen" if="$(arg fake_render_sound)">
         <param name="action_name" value="render_sound" />

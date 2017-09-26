@@ -7,6 +7,7 @@
     <arg name="fake_render_screen" default="true" />
     <arg name="fake_render_facial_expression" default="true" />
     <arg name="fake_render_sound" default="true" />
+    <arg name="fake_render_mobility" default="true" />
 
     <include file="$(find working_memory)/launch/bringup_mind.launch">
         <arg name="mind_path" value="$(arg project_path)/mind" />
@@ -24,6 +25,7 @@
         <arg name="fake_render_facial_expression" value="$(arg fake_render_facial_expression)" />
         <arg name="fake_render_screen" value="$(arg fake_render_screen)" />
         <arg name="fake_render_sound" value="$(arg fake_render_sound)" />
+        <arg name="fake_render_mobility" value="$(arg fake_render_mobility)" />
     </include>
 
     <node name="gaze" type="gaze_node.py" pkg="behaviors" output="screen" />
