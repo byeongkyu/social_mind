@@ -90,8 +90,8 @@ class MotionArbiter:
         rospy.Subscriber('reply', Reply, self.handle_domain_reply)
         self.pub_log_item = rospy.Publisher('log', LogItem, queue_size=10)
 
-        self.pub_start_speech_recognizer = rospy.Publisher('speech_recognizer/start', Empty, queue_size=1)
-        self.pub_stop_speech_recognizer = rospy.Publisher('speech_recognizer/stop', Empty, queue_size=1)
+        self.pub_start_speech_recognizer = rospy.Publisher('sp_speech_recognizer/start', Empty, queue_size=1)
+        self.pub_stop_speech_recognizer = rospy.Publisher('sp_speech_recognizer/stop', Empty, queue_size=1)
 
         self.pub_start_robot_speech = rospy.Publisher('robot_speech/start', Empty, queue_size=1)
         self.pub_stop_robot_speech = rospy.Publisher('robot_speech/stop', Empty, queue_size=1)
@@ -328,9 +328,11 @@ class MotionArbiter:
 
                 goal.render_scene = json.dumps(scene_dict)
                 self.renderer_client.send_goal(goal, done_cb=self.render_done, feedback_cb=self.render_feedback, active_cb=self.render_active)
+                self.is_rendering = True
 
-                while not rospy.is_shutdown() and not self.is_rendering:
-                    rospy.sleep(0.1)
+                # while not rospy.is_shutdown() and not self.is_rendering:
+                #     rospy.sleep(0.1)
+                print goal
 
                 while not rospy.is_shutdown() and self.is_rendering:
                     rospy.sleep(0.1)
