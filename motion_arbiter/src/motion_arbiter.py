@@ -45,6 +45,7 @@ class SceneQueueData:
         self.sound = {}
         self.expression = {}
         self.screen = {}
+        self.mobility = {}
         self.br = {}
         self.log = ''
 
@@ -57,6 +58,7 @@ class SceneQueueData:
         print ' [SOUND]     : ', self.sound
         print ' [EXPRESSION]: ', self.expression
         print ' [SCREEN]    : ', self.screen
+        print ' [MOBILITY]  : ', self.mobility
         print ' [BR]        : ', self.br
         print ' [LOG]       : ', self.log
         rospy.loginfo('-' * 10)
@@ -187,6 +189,9 @@ class MotionArbiter:
                 elif tag[0].strip() == 'screen':
                     scene_item.screen['render'] = tag[1].strip()
                     scene_item.screen['offset'] = float(index / SIZE_FOR_CHARACTER * TIME_FOR_CHARACTER)
+                elif tag[0].strip() == 'mobility':
+                    scene_item.mobility['render'] = tag[1].strip()
+                    scene_item.mobility['offset'] = float(index / SIZE_FOR_CHARACTER * TIME_FOR_CHARACTER)
                 elif tag[0].strip() == 'sound':
                     scene_item.sound['render'] = tag[1].strip()
                     scene_item.sound['offset'] = float(index / SIZE_FOR_CHARACTER * TIME_FOR_CHARACTER)
@@ -299,6 +304,7 @@ class MotionArbiter:
                 sound = {}
                 expression = {}
                 screen = {}
+                mobility = {}
                 br = {}
                 log = ''
                 '''
@@ -316,6 +322,7 @@ class MotionArbiter:
                 scene_dict['sound'] = scene_item.sound
                 scene_dict['expression'] = scene_item.expression
                 scene_dict['screen'] = scene_item.screen
+                scene_dict['mobility'] = scene_item.mobility
                 scene_dict['gaze'] = scene_item.gaze
                 scene_dict['br'] = scene_item.br
 

@@ -52,6 +52,9 @@ class MotionRenderer:
         self.render_client['screen'] = actionlib.SimpleActionClient('render_screen', RenderItemAction)
         self.render_client['screen'].wait_for_server()
 
+        self.render_client['mobility'] = actionlib.SimpleActionClient('render_mobility', RenderItemAction)
+        self.render_client['mobility'].wait_for_server()
+
         self.render_client['sound'] = actionlib.SimpleActionClient('render_sound', RenderItemAction)
         self.render_client['sound'].wait_for_server()
 
@@ -61,6 +64,7 @@ class MotionRenderer:
         self.is_rendering['expression'] = False
         self.is_rendering['screen'] = False
         self.is_rendering['sound'] = False
+        self.is_rendering['mobility'] = False
 
         self.return_to_last_expression = False
 
@@ -76,6 +80,9 @@ class MotionRenderer:
 
         self.cb_start['screen'] = self.handle_render_screen_start
         self.cb_done['screen'] = self.handle_render_screen_done
+
+        self.cb_start['mobility'] = self.handle_render_mobility_start
+        self.cb_done['mobility'] = self.handle_render_mobility_done
 
         self.cb_start['sound'] = self.handle_render_sound_start
         self.cb_done['sound'] = self.handle_render_sound_done
@@ -106,6 +113,12 @@ class MotionRenderer:
 
     def handle_render_screen_start(self):
         self.is_rendering['screen'] = True
+
+    def handle_render_mobility_done(self, state, result):
+        self.is_rendering['mobility'] = False
+
+    def handle_render_mobility_start(self):
+        self.is_rendering['mobility'] = True
 
     def handle_render_sound_done(self, state, result):
         self.is_rendering['sound'] = False

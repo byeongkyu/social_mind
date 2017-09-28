@@ -13,8 +13,8 @@ from mind_msgs.srv import ReadData, ReadDataRequest
 
 
 GAZE_CONTROLLER_PERIOD = 0.2
-GLANCE_TIMEOUT_MEAN = 5.0
-IDLE_TIMEOUT_MEAN = 4.0
+GLANCE_TIMEOUT_MEAN = 6.0
+IDLE_TIMEOUT_MEAN = 10.0
 
 class GazeState:
     IDLE = 0
