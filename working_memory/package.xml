@@ -11,11 +11,11 @@
     <url type="repository">https://stash.auckland.ac.nz/users/bahn915/repos/social_mind</url>
 
     <buildtool_depend>catkin</buildtool_depend>
-    <depend>mongodb-server</depend>
+    <depend>mongodb</depend>
     <depend>warehouse_ros</depend>
     <depend>python-pymongo</depend>
     <depend>message_generation</depend>
-    <depend>mhri_msgs</depend>
+    <depend>mind_msgs</depend>
     <exec_depend>message_runtime</exec_depend>
 
     <export></export>

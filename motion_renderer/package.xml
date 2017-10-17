@@ -14,11 +14,11 @@
   <build_depend>rospy</build_depend>
   <build_depend>rqt_gui</build_depend>
   <build_depend>rqt_gui_py</build_depend>
-  <build_depend>mhri_msgs</build_depend>
+  <build_depend>mind_msgs</build_depend>
   <run_depend>rospy</run_depend>
   <run_depend>rqt_gui</run_depend>
   <run_depend>rqt_gui_py</run_depend>
-  <run_depend>mhri_msgs</run_depend>
+  <run_depend>mind_msgs</run_depend>
 
 
   <export>
