@@ -104,7 +104,7 @@ class GazeNode:
                     cmd.target_point.header.frame_id = 'base_footprint'
                     cmd.target_point.point.x = 2.0
                     cmd.target_point.point.y = random.randrange(-10, 10) / 10.0
-                    cmd.target_point.point.z = 0.6 + (random.randrange(-2, 5) / 10.0)
+                    cmd.target_point.point.z = (random.randrange(-2, 5) / 10.0)
                     cmd.max_speed = random.randrange(5, 15) / 100.0
 
                     self.pub_gaze_cmd.publish(cmd)
