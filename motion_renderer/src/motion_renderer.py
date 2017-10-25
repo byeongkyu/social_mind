@@ -145,7 +145,7 @@ class MotionRenderer:
         try:
             if render_scene['expression'] != {}:
                 # render_scene['expression']['render'] = render_scene['expression']['render'].rstrip('~')
-                self.return_to_last_expression = True
+                self.return_to_last_expression = False
         except KeyError:
             pass
 
