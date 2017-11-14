@@ -101,7 +101,7 @@ class GazeNode:
                 if self.idle_timecount > self.idle_timeout:
                     cmd = GazeCommand()
                     # cmd.target_point.header.stamp = rospy.Time.now()
-                    cmd.target_point.header.frame_id = 'base_footprint'
+                    cmd.target_point.header.frame_id = 'base_link'
                     cmd.target_point.point.x = 2.0
                     cmd.target_point.point.y = random.randrange(-10, 10) / 10.0
                     cmd.target_point.point.z = (random.randrange(-2, 5) / 10.0)
