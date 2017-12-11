@@ -92,11 +92,9 @@ Social HRI Software Framework (mhri) is the modularized HRI software framework f
         reply: "<expression=happiness> Hello. My name is Silbot"
 
 
-_Tag and Gesture List for silbot3 can find in this file: [motions.yaml]_
+_Tag and Gesture List for Robots typically can find in each robot's render_gesutre package: motions.yaml_
 
 
+[RaisingEvents.msg]: https://raw.githubusercontent.com/byeongkyu/social_mind/master/mind_msgs/msg/RaisingEvents.msg
 
-[motions.yaml]: https://stash.auckland.ac.nz/projects/FOEROBOTICS/repos/silbot3_shri_render/raw/silbot3_render_gesture/config/motions.yaml?at=refs%2Fheads%2Fmaster
-[RaisingEvents.msg]: https://stash.auckland.ac.nz/projects/FOEROBOTICS/repos/social_mind/raw/mind_msgs/msg/RaisingEvents.msg?at=refs%2Fheads%2Fmaster
-
-[Reply.msg]: https://stash.auckland.ac.nz/projects/FOEROBOTICS/repos/social_mind/raw/mind_msgs/msg/Reply.msg?at=refs%2Fheads%2Fmaster
+[Reply.msg]: https://raw.githubusercontent.com/byeongkyu/social_mind/master/mind_msgs/msg/Reply.msg
