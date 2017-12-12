@@ -90,6 +90,7 @@ class MotionArbiter:
             quit()
 
         rospy.Subscriber('reply', Reply, self.handle_domain_reply)
+        self.pub_empty_queue = rospy.Publisher('scene_queue_empty', String, queue_size=10)
         self.pub_log_item = rospy.Publisher('log', LogItem, queue_size=10)
 
         self.pub_start_speech_recognizer = rospy.Publisher('sp_speech_recognizer/start', Empty, queue_size=1)
@@ -230,8 +231,6 @@ class MotionArbiter:
                     self.scene_queue.queue.clear()
                 self.scene_queue.put(scene_item)
 
-            print scene_item
-
     def handle_scene_queue(self):
         rospy.wait_for_service('social_events_memory/read_data')
         rd_memory = rospy.ServiceProxy('social_events_memory/read_data', ReadData)
@@ -336,10 +335,7 @@ class MotionArbiter:
                 goal.render_scene = json.dumps(scene_dict)
                 self.renderer_client.send_goal(goal, done_cb=self.render_done, feedback_cb=self.render_feedback, active_cb=self.render_active)
                 self.is_rendering = True
-
-                # while not rospy.is_shutdown() and not self.is_rendering:
-                #     rospy.sleep(0.1)
-                print goal
+                rospy.sleep(0.1)
 
                 while not rospy.is_shutdown() and self.is_rendering:
                     rospy.sleep(0.1)
@@ -361,12 +357,16 @@ class MotionArbiter:
     def render_done(self, state, result):
         rospy.loginfo('\033[91m[%s]\033[0m scene rendering done...'%rospy.get_name())
         self.is_rendering = False
-        # rospy.sleep(0.4)
-        # while self.is_speaking_started and not rospy.is_shutdown():
-        #     pass
-        rospy.sleep(0.5)
+
+        if self.scene_queue.empty():
+            self.pub_empty_queue.publish(json.dumps('{}'))
+
+        rospy.sleep(0.2)
         self.pub_start_speech_recognizer.publish()
         self.pub_stop_robot_speech.publish()
+
+
+
 
 
 if __name__ == '__main__':
