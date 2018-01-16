@@ -2,6 +2,7 @@
     <arg name="project_path"/>
     <arg name="overwrite" default="false"/>
     <arg name="gaze" default="true" />
+    <arg name="gaze_default_height" default="0.0" />
 
     <arg name="fake_render_speech" default="true" />
     <arg name="fake_render_gesture" default="true" />
@@ -29,5 +30,7 @@
         <arg name="fake_render_mobility" value="$(arg fake_render_mobility)" />
     </include>
 
-    <node name="gaze" type="gaze_node.py" pkg="behaviors" output="screen" if="$(arg gaze)"/>
+    <node name="gaze" type="gaze_node.py" pkg="behaviors" output="screen" if="$(arg gaze)">
+        <param name="default_height" value="$(arg gaze_default_height)" />
+    </node>
 </launch>

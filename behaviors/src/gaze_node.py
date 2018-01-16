@@ -41,6 +41,7 @@ class GazeNode:
         self.idle_timecount = 0
         self.idle_played = False
 
+        self.default_height = rospy.get_param('~default_height', 0.4)
 
         rospy.loginfo('\033[92m[%s]\033[0m waiting for bringup social_mind...'%rospy.get_name())
         rospy.wait_for_service('environmental_memory/read_data')
@@ -104,7 +105,7 @@ class GazeNode:
                     cmd.target_point.header.frame_id = 'base_link'
                     cmd.target_point.point.x = 2.0
                     cmd.target_point.point.y = random.randrange(-10, 10) / 10.0
-                    cmd.target_point.point.z = (random.randrange(-2, 5) / 10.0)
+                    cmd.target_point.point.z = self.default_height + (random.randrange(-2, 5) / 10.0)
                     cmd.max_speed = random.randrange(5, 15) / 100.0
 
                     self.pub_gaze_cmd.publish(cmd)
