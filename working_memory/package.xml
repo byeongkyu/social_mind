@@ -8,12 +8,11 @@
     <maintainer email="byeongkyu@gmail.com">Byeong-Kyu Ahn</maintainer>
 
     <license>BSD</license>
-    <url type="repository">https://stash.auckland.ac.nz/users/bahn915/repos/social_mind</url>
+    <url type="repository">https://github.com/byeongkyu/social_mind</url>
 
     <buildtool_depend>catkin</buildtool_depend>
     <depend>mongodb</depend>
     <depend>warehouse_ros</depend>
-    <depend>python-pymongo</depend>
     <depend>message_generation</depend>
     <depend>mind_msgs</depend>
     <exec_depend>message_runtime</exec_depend>
