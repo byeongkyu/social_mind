@@ -1,6 +1,6 @@
 # Motion Arbiter
 
-## Train sentence classifier
+## Training sentence classifier
 
 - make utterance data with label
 
@@ -27,3 +27,48 @@
         $ rosrun motion_arbiter train_classifier.py _utterance_data:=<path>/utterance_data.txt
 
     and then, the classifier will saved to motion_arbiter/config/classifier.pickle, previous classifier name will be changed classifier_backup\_\<date\>.pickle
+
+## Senetence Classifier
+
+This node classify the input sentence to 14 types as show below:
+    GREETING, REQUEST, THANK_YOU, AFFIRM, CANT_UNDERSTAND, NEGATE, GOOD_BYE, SELECT, NOTIFY_SUCCESS, INFORM, OFFER, NOTIFY_FAILURE, OTHER, CANT_UNDERSTAND
+
+### usage
+
+        $ rosrun motion_arbiter sentence_classifier.py
+
+#### Subscribe
+
+- reply (mind_msgs/Reply)
+
+        Header header
+        string reply
+
+#### Publish
+
+- reply_analyzed (mind_msgs/ReplyAnalyzed)
+
+        Header header
+        string[] sents
+        string[] act_type
+        EntitiesIndex[] entities
+
+    example)
+
+        ---
+        header:
+        seq: 3
+        stamp:
+            secs: 1531373284
+            nsecs: 219924926
+        frame_id: ''
+        sents: [hi!, my name is brown.]
+        act_type: ['GREETING,3', 'REQUEST,17']
+        entities:
+        -
+            entity: [hi]
+            entity_index: [0]
+        -
+            entity: [my, name]
+            entity_index: [0, 3]
+        ---

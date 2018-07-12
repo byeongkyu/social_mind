@@ -53,6 +53,8 @@ add_message_files(
   ScriptStatus.msg
   LogItem.msg
   GazeCommand.msg
+  ReplyAnalyzed.msg
+  EntitiesIndex.msg
 )
 
 ## Generate services in the 'srv' folder
