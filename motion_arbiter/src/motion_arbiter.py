@@ -10,7 +10,7 @@ import operator
 from threading import Thread
 
 from std_msgs.msg import String, Bool, Empty
-from mind_msgs.msg import Reply
+from mind_msgs.msg import ReplyAnalyzed
 from mind_msgs.msg import RenderSceneAction, RenderSceneGoal, RenderItemGoal
 from mind_msgs.srv import ReadData, ReadDataRequest
 from mind_msgs.msg import LogItem
@@ -89,7 +89,7 @@ class MotionArbiter:
         except rospy.exceptions.ROSInterruptException as e:
             quit()
 
-        rospy.Subscriber('reply', Reply, self.handle_domain_reply)
+        rospy.Subscriber('reply_analyzed', ReplyAnalyzed, self.handle_reply_analyzed)
         self.pub_empty_queue = rospy.Publisher('scene_queue_empty', String, queue_size=10)
         self.pub_log_item = rospy.Publisher('log', LogItem, queue_size=10)
 
@@ -121,6 +121,29 @@ class MotionArbiter:
 
     def handle_end_of_speech(self, msg):
         self.is_speaking_started = False
+
+    def handle_reply_analyzed(self, msg):
+        reply_list = []
+
+        # Save the replies
+        for i in range(len(msg.sents)):
+            if i == 0:
+                reply_list.append( (msg.sents[i],
+                    0,
+                    msg.act_type[i].split(',')[0],
+                    msg.entities[i].entity,
+                    list(msg.entities[i].entity_index)
+                    ) )
+            else:
+                reply_list.append( (msg.sents[i],
+                    float(int(msg.act_type[i].split(',')[-1]) / SIZE_FOR_CHARACTER * TIME_FOR_CHARACTER),
+                    msg.act_type[i].split(',')[0],
+                    msg.entities[i].entity,
+                    list(msg.entities[i].entity_index)
+                    ) )
+
+        # Generate Tags for each replay
+
 
     def handle_domain_reply(self, msg):
         recv_msg = msg.reply
