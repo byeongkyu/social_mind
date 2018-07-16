@@ -1,7 +1,7 @@
-# mhri
+# Social Mind
 ## Overview
 
-Social HRI Software Framework (mhri) is the modularized HRI software framework for developing the social robots. The framework is modularized by each function such as sensory perception, social perception, social mind, dialog, motion arbiter and motion renderer. Each module sends and receives the information (event, data) with each other using the ROS topic, service and actionlib.
+Social HRI Software Framework - Social Mind - is the modularized HRI software framework for developing the social robots. The framework is modularized by each function such as sensory perception, social perception, social mind, dialog, motion arbiter and motion renderer. Each module sends and receives the information (event, data) with each other using the ROS topic, service and actionlib.
 
 <center><a href="./doc/social_mind_block_diagram.png"><img src="./doc/social_mind_block_diagram.png" width="500px"></a></center>
 
