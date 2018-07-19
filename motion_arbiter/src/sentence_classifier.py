@@ -1,18 +1,18 @@
 #!/usr/bin/env python
 #-*- encoding: utf8 -*-
 
-from nltk.corpus import stopwords
-from nltk import word_tokenize, pos_tag, classify, NaiveBayesClassifier
-import nltk.data
-
+import os
 import pickle
 import re
-import rospy
-import rospkg
-import os
 
-from mind_msgs.msg import Reply
-from mind_msgs.msg import ReplyAnalyzed, EntitiesIndex
+import nltk.data
+import rospkg
+import rospy
+from nltk import NaiveBayesClassifier, classify, pos_tag, word_tokenize
+from nltk.corpus import stopwords
+
+from mind_msgs.msg import EntitiesIndex, Reply, ReplyAnalyzed
+
 
 STOPWORDS = set(stopwords.words('english'))
 
@@ -48,18 +48,39 @@ class SentenceClassifier:
         msg.header.stamp = rospy.Time.now()
 
         for sent in sents:
-            feature = dialogue_act_features(sent)
-            result = self.classifier.classify(feature)
+            # sperate tags and text
+            sent_tags = re.findall('({[^}]+})', sent)
+            sent_text = re.sub('({[^}]+})', '', sent).strip()
 
+            # if task manager select intent we use it, or we use classifier for select intent
+            result = ''
+            remain_tags = ''
+            if not any('sm=' in tag for tag in sent_tags):
+                feature = dialogue_act_features(sent_text)
+                result = self.classifier.classify(feature)
+                remain_tags = sent_tags[0]
+            else:
+                tag_text = sent_tags[0].strip('{}').split('|')
+                matching = [s for s in tag_text if "sm=" in s]
+                if len(matching) > 1:
+                    rospy.logwarn('Only one sm tags allowed...')
+                result = matching[0].split('=')[1]
+                for s in tag_text:
+                    if not "sm=" in s:
+                        remain_tags += s + '|'
+                if remain_tags != '':
+                    remain_tags = '{' + remain_tags.rstrip('|') + '} '
+
+            # select entities
             entity = EntitiesIndex()
-            for i in pos_tag(word_tokenize(sent)):
+            for i in pos_tag(word_tokenize(sent_text)):
                 if(i[1] in ['RB', 'PRP', 'NN', 'PRP$']):
                     entity.entity.append(i[0])
-                    entity.entity_index.append(sent.index(i[0]))
+                    entity.entity_index.append(sent_text.index(i[0]))
 
             msg.entities.append(entity)
-            msg.sents.append(sent)
-            msg.act_type.append(result + ',%d'%len(sent))
+            msg.sents.append(remain_tags + sent_text)
+            msg.act_type.append(result + '/%d'%len(sent_text))
 
         self.pub_reply_analyzed.publish(msg)
 
@@ -68,4 +89,3 @@ if __name__ == '__main__':
     rospy.init_node('sentence_classifier', anonymous=False)
     m = SentenceClassifier()
     rospy.spin()
-
