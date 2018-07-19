@@ -1,19 +1,18 @@
 #!/usr/bin/env python
 # -*- encoding: utf8 -*-
 
-import rospy
-import actionlib
-import re
-import Queue
 import json
 import operator
+import Queue
+import re
 from threading import Thread
 
-from std_msgs.msg import String, Bool, Empty
-from mind_msgs.msg import ReplyAnalyzed
-from mind_msgs.msg import RenderSceneAction, RenderSceneGoal, RenderItemGoal
+import actionlib
+import rospy
+from std_msgs.msg import Bool, Empty, String
+
+from mind_msgs.msg import (LogItem, RenderItemGoal, RenderSceneAction, RenderSceneGoal, Reply, ReplyAnalyzed)
 from mind_msgs.srv import ReadData, ReadDataRequest
-from mind_msgs.msg import LogItem
 
 MAX_QUEUE_SIZE = 10
 TIME_FOR_CHARACTER = 0.18
@@ -50,7 +49,8 @@ class SceneQueueData:
         self.log = ''
 
     def __str__(self):
-        rospy.loginfo('=' * 10)
+        rospy.loginfo('scene item')
+        print('=' * 30)
         print ' [SM]        : ', self.sm
         print ' [SAY]       : ', self.say
         print ' [GAZE]      : ', self.gaze
@@ -61,7 +61,7 @@ class SceneQueueData:
         print ' [MOBILITY]  : ', self.mobility
         print ' [BR]        : ', self.br
         print ' [LOG]       : ', self.log
-        rospy.loginfo('-' * 10)
+        print('-' * 30)
         return ''
 
 
@@ -90,6 +90,7 @@ class MotionArbiter:
             quit()
 
         rospy.Subscriber('reply_analyzed', ReplyAnalyzed, self.handle_reply_analyzed)
+        rospy.Subscriber('reply_deprecated', Reply, self.handle_domain_reply)
         self.pub_empty_queue = rospy.Publisher('scene_queue_empty', String, queue_size=10)
         self.pub_log_item = rospy.Publisher('log', LogItem, queue_size=10)
 
@@ -127,25 +128,46 @@ class MotionArbiter:
 
         # Save the replies
         for i in range(len(msg.sents)):
-            if i == 0:
-                reply_list.append( (msg.sents[i],
-                    0,
-                    msg.act_type[i].split(',')[0],
-                    msg.entities[i].entity,
-                    list(msg.entities[i].entity_index)
-                    ) )
-            else:
-                reply_list.append( (msg.sents[i],
-                    float(int(msg.act_type[i].split(',')[-1]) / SIZE_FOR_CHARACTER * TIME_FOR_CHARACTER),
-                    msg.act_type[i].split(',')[0],
-                    msg.entities[i].entity,
-                    list(msg.entities[i].entity_index)
-                    ) )
+            reply_list.append( (msg.sents[i],
+                0,
+                msg.act_type[i].split('/')[0],
+                msg.entities[i].entity,
+                list(msg.entities[i].entity_index)
+                ) )
 
-        # Generate Tags for each replay
+        # Generate Timeline for each reply
+        for reply in reply_list:
+            print reply
+            reply_tags = re.findall('({[^}]+})', reply[0])
+            reply_text = re.sub('({[^}]+})', '', reply[0]).strip()
 
+            scene_item = SceneQueueData()
+            scene_item.br['time'] = 0
+
+            if len(reply_tags) > 0:
+                for tag in reply_tags[0].strip('{}').split('|'):
+                    tag = tag.split('=')
+                    tag_type = tag[0].strip().lower()
+                    tag_content = tag[1].strip().lower()
+
+                    if tag_type == 'expression':
+                        scene_item.expression['render'] = tag_content
+                        scene_item.expression['offset'] = 0.0 #TBD
+                    elif tag_type == 'gaze':
+                        scene_item.gaze['render'] = tag_content
+                        scene_item.gaze['offset'] = 0.0 #TBD
+
+            scene_item.sm['render'] = 'tag:' + reply[2].lower()
+            scene_item.sm['offset'] = 0.0 #TBD
+
+            if reply_text.strip() != '':
+                scene_item.say['render'] = reply_text.strip()
+                scene_item.say['offset'] = 0.0 # TBD
+
+            self.scene_queue.put(scene_item)
 
     def handle_domain_reply(self, msg):
+        rospy.logwarn('This topic is deprecated. Please use /reply.')
         recv_msg = msg.reply
 
         # 메시지 중에 <br=?> 태그가 있는 경우, 씬을 분리하고, 뒤쪽의 씬에 Delay 옵션을 줘야 한다.
@@ -314,7 +336,7 @@ class MotionArbiter:
                             scene_dict['gaze']['render'] = response.data
                             scene_dict['gaze']['offset'] = scene_item.gaze['offset']
                         else:
-                            rospy.logwarn("Can't find the information if %s"%target_data[1])
+                            rospy.logwarn("Can't find the information for %s"%target_data[1])
 
                     except rospy.ServiceException, e:
                         rospy.logerr("service call failed: %s" % e)
