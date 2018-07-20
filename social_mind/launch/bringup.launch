@@ -19,7 +19,9 @@
     <node name="events_multiplexer" type="multiplexer_node.py" pkg="events_multiplexer" output="screen"/>
 
     <node name="sentence_analyzer" type="sentence_classifier.py" pkg="motion_arbiter" output="screen"/>
-    <node name="motion_arbiter" type="motion_arbiter.py" pkg="motion_arbiter" output="screen" />
+    <node name="motion_arbiter" type="motion_arbiter.py" pkg="motion_arbiter" output="screen">
+        <param name="visualization" value="true" />
+    </node>
     <node name="motion_renderer" type="motion_renderer.py" pkg="motion_renderer" output="screen" />
 
     <include file="$(find motion_renderer)/launch/bringup_renderer.launch">

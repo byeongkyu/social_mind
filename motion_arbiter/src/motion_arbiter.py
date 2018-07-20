@@ -5,7 +5,11 @@ import json
 import operator
 import Queue
 import re
+import os
+import signal
 from threading import Thread
+from matplotlib import pyplot as plt
+import matplotlib
 
 import actionlib
 import rospy
@@ -37,15 +41,15 @@ class SceneQueueData:
     log = ''
 
     def __init__(self):
-        self.sm = {}
-        self.say = {}
-        self.gaze = {}
-        self.pointing = {}
-        self.sound = {}
-        self.expression = {}
-        self.screen = {}
-        self.mobility = {}
-        self.br = {}
+        self.sm = {'render': '', 'offset': 0.0}
+        self.say = {'render': '', 'offset': 0.0}
+        self.gaze = {'render': '', 'offset': 0.0}
+        self.pointing = {'render': '', 'offset': 0.0}
+        self.sound = {'render': '', 'offset': 0.0}
+        self.expression = {'render': '', 'offset': 0.0}
+        self.screen = {'render': '', 'offset': 0.0}
+        self.mobility = {'render': '', 'offset': 0.0}
+        self.br = {time: 0}
         self.log = ''
 
     def __str__(self):
@@ -64,10 +68,41 @@ class SceneQueueData:
         print('-' * 30)
         return ''
 
+    def get_plot_data(self):
+        # render_label = reversed(['SAY', 'SM', 'GAZE', 'SOUND', 'EXPRESSION', 'SCREEN', 'MOBILITY'])
+        pass
+
 
 class MotionArbiter:
 
     def __init__(self):
+        self.enable_visualization = rospy.get_param('~visualization', False)
+
+        if self.enable_visualization:
+            matplotlib.rcParams['toolbar'] = 'None'
+            plt.ion()
+            self.fig = plt.figure(figsize=(8, 2))
+            self.fig.canvas.set_window_title('Generated Timeline')
+            self.ax = plt.subplot(111)
+
+            # self.ax.broken_barh([(1, 0)], (2, 3.4), facecolor='#95d0fc', label="TEST")
+            # self.ax.broken_barh([(2, 0)], (6, 3.4), facecolor='#06c2ac')
+            # self.ax.broken_barh([(3, 0)], (10, 3.4), facecolor='#c7fdb5')
+            # self.ax.broken_barh([(4, 0)], (14, 3.4), facecolor='#fac205')
+            # self.ax.broken_barh([(5, 0)], (18, 3.4), facecolor='#607c8e')
+            # self.ax.broken_barh([(6, 0)], (22, 3.4), facecolor='#a2a415')
+
+            # self.ax.set_yticklabels(['SAY', 'SM', 'GAZE', 'SOUND', 'EXPRESSION', 'SCREEN', 'MOBILITY'])
+            # self.ax.set_yticks([4, 8, 12, 16, 20, 24])
+            self.fig.tight_layout()
+            self.fig.canvas.draw()
+            plt.pause(0.001)
+            plt.show(block=False)
+
+
+            signal.signal(signal.SIGUSR2, self.handle_update_figure)
+            signal.siginterrupt(signal.SIGUSR2, False)
+
         self.is_rendering = False
 
         rospy.loginfo('\033[91m[%s]\033[0m waiting for bringup social_mind...'%rospy.get_name())
@@ -117,6 +152,9 @@ class MotionArbiter:
 
         rospy.loginfo("\033[91m[%s]\033[0m initialized." % rospy.get_name())
 
+    def handle_update_figure(self, signum, frame):
+        self.fig.canvas.draw()
+
     def handle_start_of_speech(self, msg):
         self.is_speaking_started = True
 
@@ -129,7 +167,7 @@ class MotionArbiter:
         # Save the replies
         for i in range(len(msg.sents)):
             reply_list.append( (msg.sents[i],
-                0,
+                msg.act_type[i].split('/')[1],
                 msg.act_type[i].split('/')[0],
                 msg.entities[i].entity,
                 list(msg.entities[i].entity_index)
