@@ -58,7 +58,9 @@ class SentenceClassifier:
             if not any('sm=' in tag for tag in sent_tags):
                 feature = dialogue_act_features(sent_text)
                 result = self.classifier.classify(feature)
-                remain_tags = sent_tags[0]
+
+                if sent_tags != []:
+                    remain_tags = sent_tags[0]
             else:
                 tag_text = sent_tags[0].strip('{}').split('|')
                 matching = [s for s in tag_text if "sm=" in s]
@@ -69,7 +71,7 @@ class SentenceClassifier:
                     if not "sm=" in s:
                         remain_tags += s + '|'
                 if remain_tags != '':
-                    remain_tags = '{' + remain_tags.rstrip('|') + '} '
+                    remain_tags = '{' + remain_tags.rstrip('|') + '}'
 
             # select entities
             entity = EntitiesIndex()
@@ -79,7 +81,7 @@ class SentenceClassifier:
                     entity.entity_index.append(sent_text.index(i[0]))
 
             msg.entities.append(entity)
-            msg.sents.append(remain_tags + sent_text)
+            msg.sents.append(remain_tags + ' ' + sent_text)
             msg.act_type.append(result + '/%d'%len(sent_text))
 
         self.pub_reply_analyzed.publish(msg)
