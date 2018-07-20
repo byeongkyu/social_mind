@@ -139,7 +139,7 @@ class MotionRenderer:
         render_scene = json.loads(goal.render_scene)
         render_scene_time = {}
         for k, v in render_scene.items():
-            if v != {} and k != 'emotion' and k != 'br':
+            if k != 'emotion' and k != 'br' and v['render'] != '':
                 render_scene_time[k] = v['offset']
 
         try:

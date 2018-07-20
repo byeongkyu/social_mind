@@ -30,16 +30,6 @@ class OverridingType:
 
 
 class SceneQueueData:
-    sm = {}
-    say = {}
-    gaze = {}
-    pointing = {}
-    sound = {}
-    expression = {}
-    screen = {}
-    br = {}
-    log = ''
-
     def __init__(self):
         self.sm = {'render': '', 'offset': 0.0}
         self.say = {'render': '', 'offset': 0.0}
@@ -49,7 +39,7 @@ class SceneQueueData:
         self.expression = {'render': '', 'offset': 0.0}
         self.screen = {'render': '', 'offset': 0.0}
         self.mobility = {'render': '', 'offset': 0.0}
-        self.br = {time: 0}
+        self.br = {'time': 0}
         self.log = ''
 
     def __str__(self):
@@ -69,14 +59,26 @@ class SceneQueueData:
         return ''
 
     def get_plot_data(self):
-        # render_label = reversed(['SAY', 'SM', 'GAZE', 'SOUND', 'EXPRESSION', 'SCREEN', 'MOBILITY'])
-        pass
+        offset = self.br['time']
+
+        data = []
+        data.append(['SAY',        self.say['render'],        (offset + self.say['offset'], float(len(self.say['render']) / SIZE_FOR_CHARACTER * TIME_FOR_CHARACTER)), (2, 3.6), '#a2a415'])
+        data.append(['SM',         self.sm['render'],         (offset + self.sm['offset'], 4.0),         (6, 3.6), '#607c8e']) #TBD
+        data.append(['GAZE',       self.gaze['render'],       (offset + self.gaze['offset'], 2.0),       (10, 3.6), '#fac205']) #TBD
+        data.append(['POINTING',   self.pointing['render'],   (offset + self.pointing['offset'], 2.0),   (14, 3.6), '#c7fdb5']) #TBD
+        data.append(['SOUND',      self.sound['render'],      (offset + self.sound['offset'], 4.0),      (18, 3.6), '#06c2ac']) #TBD
+        data.append(['EXPRESSION', self.expression['render'], (offset + self.expression['offset'], 4.0), (22, 3.6), '#c875c4']) #TBD
+        data.append(['SCREEN',     self.screen['render'],     (offset + self.screen['offset'], 4.0),     (26, 3.6), '#88b378']) #TBD
+        data.append(['MOBILITY',   self.mobility['render'],   (offset + self.mobility['offset'], 4.0),   (30, 3.6), '#82cafc']) #TBD
+        return data
 
 
 class MotionArbiter:
-
     def __init__(self):
         self.enable_visualization = rospy.get_param('~visualization', False)
+
+        aa = SceneQueueData()
+        aa.get_plot_data()
 
         if self.enable_visualization:
             matplotlib.rcParams['toolbar'] = 'None'
@@ -85,20 +87,12 @@ class MotionArbiter:
             self.fig.canvas.set_window_title('Generated Timeline')
             self.ax = plt.subplot(111)
 
-            # self.ax.broken_barh([(1, 0)], (2, 3.4), facecolor='#95d0fc', label="TEST")
-            # self.ax.broken_barh([(2, 0)], (6, 3.4), facecolor='#06c2ac')
-            # self.ax.broken_barh([(3, 0)], (10, 3.4), facecolor='#c7fdb5')
-            # self.ax.broken_barh([(4, 0)], (14, 3.4), facecolor='#fac205')
-            # self.ax.broken_barh([(5, 0)], (18, 3.4), facecolor='#607c8e')
-            # self.ax.broken_barh([(6, 0)], (22, 3.4), facecolor='#a2a415')
+            self.plot_item = SceneQueueData()
+            self.plot_to_matplotlib(self.plot_item.get_plot_data())
 
-            # self.ax.set_yticklabels(['SAY', 'SM', 'GAZE', 'SOUND', 'EXPRESSION', 'SCREEN', 'MOBILITY'])
-            # self.ax.set_yticks([4, 8, 12, 16, 20, 24])
-            self.fig.tight_layout()
             self.fig.canvas.draw()
             plt.pause(0.001)
             plt.show(block=False)
-
 
             signal.signal(signal.SIGUSR2, self.handle_update_figure)
             signal.siginterrupt(signal.SIGUSR2, False)
@@ -152,8 +146,34 @@ class MotionArbiter:
 
         rospy.loginfo("\033[91m[%s]\033[0m initialized." % rospy.get_name())
 
+    def plot_to_matplotlib(self, item):
+        self.ax.cla()
+
+        tick_labels = []
+        ticks = []
+
+        for i in item:
+            tick_labels.append(i[0])
+            ticks.append(i[3][0] + 2)
+
+            if i[1] != '':
+                self.ax.broken_barh([i[2]], i[3], facecolor=i[4])
+            else:
+                self.ax.broken_barh([(0, 0)], (0, 0))
+
+        self.ax.set_yticklabels(tick_labels)
+        self.ax.set_yticks(ticks)
+        self.ax.set_ylim(0, 36)
+        self.ax.invert_yaxis()
+        self.fig.tight_layout()
+
+    def save_plot_item(self, item):
+        self.plot_item = item
+
     def handle_update_figure(self, signum, frame):
+        self.plot_to_matplotlib(self.plot_item.get_plot_data())
         self.fig.canvas.draw()
+        plt.pause(0.001)
 
     def handle_start_of_speech(self, msg):
         self.is_speaking_started = True
@@ -175,7 +195,6 @@ class MotionArbiter:
 
         # Generate Timeline for each reply
         for reply in reply_list:
-            print reply
             reply_tags = re.findall('({[^}]+})', reply[0])
             reply_text = re.sub('({[^}]+})', '', reply[0]).strip()
 
@@ -325,8 +344,12 @@ class MotionArbiter:
                 scene_item = self.scene_queue.get()
                 self.scene_queue.task_done()
 
+                if self.enable_visualization:
+                    self.save_plot_item(scene_item)
+                    os.kill(os.getpid(), signal.SIGUSR2)
+
                 # Point and Semantic motion are exclusive relationship. If pointing exists, sm is ignored.
-                if scene_item.pointing != {}:
+                if scene_item.pointing['render'] != '':
                     target_data = scene_item.pointing['render'].split(':')
                     try:
                         req = ReadDataRequest()
@@ -352,12 +375,12 @@ class MotionArbiter:
                     except ValueError:
                         scene_dict['sm'] = {'render': 'gesture=tag:neutral', 'offset': scene_item.pointing['offset']}
                 else:
-                    if scene_item.sm != {}:
+                    if scene_item.sm['render'] != '':
                         scene_dict['sm'] = {}
                         scene_dict['sm']['render'] = 'gesture=' + scene_item.sm['render']
                         scene_dict['sm']['offset'] = scene_item.sm['offset']
 
-                if scene_item.gaze != {}:
+                if scene_item.gaze['render'] != '':
                     target_data = scene_item.gaze['render'].split(':')
                     try:
                         req = ReadDataRequest()
