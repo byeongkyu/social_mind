@@ -4,6 +4,8 @@
 import os
 import pickle
 import re
+import warnings
+warnings.filterwarnings('ignore', category=RuntimeWarning)
 
 import nltk.data
 import rospkg
