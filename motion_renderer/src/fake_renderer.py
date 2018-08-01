@@ -108,18 +108,18 @@ class FakeMotionRender:
                             cmd,
                             self.motion_list['neutral'][random.randint(0, len(self.motion_list['neutral']) - 1)]))
 
-            loop_count = 40
+            loop_count = 10
         if 'render_speech' in rospy.get_name():
             rospy.loginfo('\033[94m[%s]\033[0m rendering speech [%s]...'%(rospy.get_name(), goal.data))
-            loop_count = 40
+            loop_count = 10
 
         if 'render_screen' in rospy.get_name():
             rospy.loginfo('\033[94m[%s]\033[0m rendering screen [%s]...'%(rospy.get_name(), goal.data))
-            loop_count = 40
+            loop_count = 10
 
         if 'render_mobility' in rospy.get_name():
             rospy.loginfo('\033[94m[%s]\033[0m rendering mobility [%s]...'%(rospy.get_name(), goal.data))
-            loop_count = 40
+            loop_count = 10
 
         if 'render_facial_expression' in rospy.get_name():
             rospy.loginfo('\033[94m[%s]\033[0m rendering expression [%s]...'%(rospy.get_name(), goal.data))
