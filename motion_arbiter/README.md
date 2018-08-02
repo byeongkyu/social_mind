@@ -2,6 +2,9 @@
 
 ## Training sentence classifier
 
+- download nltk data
+        $ rosrun motion_arbiter download_nltk_data.py 
+
 - make utterance data with label
 
         $ cat utterance_data.txt
