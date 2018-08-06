@@ -1,5 +1,6 @@
 <launch>
     <arg name="project_path"/>
+    <arg name="use_v1_arbiter" default="false"/>
     <arg name="overwrite" default="false"/>
     <arg name="gaze" default="true" />
     <arg name="gaze_default_height" default="0.0" />
@@ -18,10 +19,16 @@
 
     <node name="events_multiplexer" type="multiplexer_node.py" pkg="events_multiplexer" output="screen"/>
 
-    <node name="sentence_analyzer" type="sentence_classifier.py" pkg="motion_arbiter" output="screen"/>
-    <node name="motion_arbiter" type="motion_arbiter.py" pkg="motion_arbiter" output="screen">
+    <node name="sentence_analyzer" type="sentence_classifier.py" pkg="motion_arbiter" output="screen" unless="$(arg use_v1_arbiter)"/>
+    <node name="motion_arbiter" type="motion_arbiter.py" pkg="motion_arbiter" output="screen" if="$(arg use_v1_arbiter)">
+        <param name="visualization" value="true" />
+        <remap from="reply_deprecated" to="reply" />
+    </node>
+    <node name="motion_arbiter" type="motion_arbiter.py" pkg="motion_arbiter" output="screen" unless="$(arg use_v1_arbiter)">
         <param name="visualization" value="true" />
     </node>
+
+
     <node name="motion_renderer" type="motion_renderer.py" pkg="motion_renderer" output="screen" />
 
     <include file="$(find motion_renderer)/launch/bringup_renderer.launch">
