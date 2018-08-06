@@ -48,15 +48,19 @@ class MotionRenderer:
 
         self.render_client['expression'] = actionlib.SimpleActionClient('render_facial_expression', RenderItemAction)
         self.render_client['expression'].wait_for_server()
+        rospy.loginfo('\033[94m[%s]\033[0m ready to connect facial_expression'%rospy.get_name())
 
         self.render_client['screen'] = actionlib.SimpleActionClient('render_screen', RenderItemAction)
         self.render_client['screen'].wait_for_server()
+        rospy.loginfo('\033[94m[%s]\033[0m ready to connect screen'%rospy.get_name())
 
         self.render_client['mobility'] = actionlib.SimpleActionClient('render_mobility', RenderItemAction)
         self.render_client['mobility'].wait_for_server()
+        rospy.loginfo('\033[94m[%s]\033[0m ready to connect mobility'%rospy.get_name())
 
         self.render_client['sound'] = actionlib.SimpleActionClient('render_sound', RenderItemAction)
         self.render_client['sound'].wait_for_server()
+        rospy.loginfo('\033[94m[%s]\033[0m ready to connect sound'%rospy.get_name())
 
         # Status flags
         self.is_rendering['say'] = False

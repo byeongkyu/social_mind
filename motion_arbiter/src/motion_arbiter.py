@@ -263,9 +263,9 @@ class MotionArbiter:
             # scene_item.expression['render'] ='neutral'
             # scene_item.expression['offset'] = 0.0
 
-            scene_item.pointing = {}
-            scene_item.gaze = {}
-            scene_item.emotion = {}
+            #scene_item.pointing = {}
+            #scene_item.gaze = {}
+            #scene_item.emotion = {}
             overriding = OverridingType.QUEUE
 
             tag_msg = recv_reply[0]
@@ -316,8 +316,9 @@ class MotionArbiter:
                 scene_item.sm['render'] = 'tag:neutral'
                 scene_item.sm['offset'] = 0.0
 
-            if scene_item.pointing != {}:
-                scene_item.sm = {}
+            if scene_item.pointing['render'] != '':
+                scene_item.sm['render'] = ''
+                scene_item.sm['offset'] = 0.0
 
             if overriding == OverridingType.QUEUE:
                 self.scene_queue.put(scene_item)
