@@ -195,7 +195,6 @@ class MotionArbiter:
 
         # Generate Timeline for each reply
         for reply in reply_list:
-            print reply
             reply_tags = re.findall('({[^}]+})', reply[0])
             reply_text = re.sub('({[^}]+})', '', reply[0]).strip()
 
@@ -222,7 +221,7 @@ class MotionArbiter:
                 scene_item.say['render'] = reply_text.strip()
 
                 if reply[2] == 'GREETING':
-                    scene_item.say['offset'] = 1.5 # TBD
+                    scene_item.say['offset'] = float(int(reply[1]) / SIZE_FOR_CHARACTER * TIME_FOR_CHARACTER)
                 else:
                     scene_item.say['offset'] = 0.0
 

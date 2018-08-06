@@ -19,7 +19,7 @@
 
     <node name="events_multiplexer" type="multiplexer_node.py" pkg="events_multiplexer" output="screen"/>
 
-    <node name="sentence_analyzer" type="sentence_classifier.py" pkg="motion_arbiter" output="screen" unless="$(arg use_v1_arbiter)"/>
+    <node name="sentence_classifier" type="sentence_classifier.py" pkg="motion_arbiter" output="screen" unless="$(arg use_v1_arbiter)"/>
     <node name="motion_arbiter" type="motion_arbiter.py" pkg="motion_arbiter" output="screen" if="$(arg use_v1_arbiter)">
         <param name="visualization" value="true" />
         <remap from="reply_deprecated" to="reply" />
