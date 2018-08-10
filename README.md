@@ -6,6 +6,15 @@ Social HRI Software Framework - Social Mind - is the modularized HRI software fr
 <center><a href="./doc/social_mind_block_diagram.png"><img src="./doc/social_mind_block_diagram.png" width="800px"></a></center>
 
 
+## Installation (by sources)
+
+        $ cd ~/catkin_ws/src
+        $ git clone https://github.com/byeongkyu/social_mind.git
+        $ rosdep install --from-paths social_mind --ignore-src -r -y
+        $ cd social_mind
+        $ find -name 'requirements.txt' | xargs -L 1 sudo pip install -U -r 
+        
+
 ## Topics
 
 ### /raising_events [RaisingEvents.msg] via [events_multiplexer](./events_multiplexer)
