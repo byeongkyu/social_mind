@@ -4,6 +4,7 @@
     <arg name="overwrite" default="false"/>
     <arg name="gaze" default="true" />
     <arg name="gaze_default_height" default="0.0" />
+    <arg name="show_generated_timeline" default="false"/>
 
     <arg name="fake_render_speech" default="true" />
     <arg name="fake_render_gesture" default="true" />
@@ -27,7 +28,7 @@
         <remap from="reply_deprecated" to="reply" />
     </node>
     <node name="motion_arbiter" type="motion_arbiter.py" pkg="motion_arbiter" output="screen" unless="$(arg use_v1_arbiter)">
-        <param name="visualization" value="true" />
+        <param name="visualization" value="$(arg show_generated_timeline)" />
     </node>
 
     <!-- Motion Renderer -->

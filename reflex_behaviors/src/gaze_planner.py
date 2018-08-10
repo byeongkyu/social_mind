@@ -25,7 +25,7 @@ class GazeState:
 
 class GazeNode:
     def __init__(self):
-        rospy.init_node('gaze', anonymous=False)
+        rospy.init_node('gaze_planner', anonymous=False)
 
         self.lock = threading.RLock()
         with self.lock:
