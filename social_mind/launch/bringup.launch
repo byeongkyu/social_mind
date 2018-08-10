@@ -12,6 +12,7 @@
     <arg name="fake_render_sound" default="true" />
     <arg name="fake_render_mobility" default="true" />
 
+    <!-- Working Memory -->
     <include file="$(find working_memory)/launch/bringup_mind.launch">
         <arg name="mind_path" value="$(arg project_path)/mind" />
         <arg name="overwrite" value="$(arg overwrite)" />
@@ -19,6 +20,7 @@
 
     <node name="events_multiplexer" type="multiplexer_node.py" pkg="events_multiplexer" output="screen"/>
 
+    <!-- Motion Arbiter -->
     <node name="sentence_classifier" type="sentence_classifier.py" pkg="motion_arbiter" output="screen" unless="$(arg use_v1_arbiter)"/>
     <node name="motion_arbiter" type="motion_arbiter.py" pkg="motion_arbiter" output="screen" if="$(arg use_v1_arbiter)">
         <param name="visualization" value="true" />
@@ -28,9 +30,8 @@
         <param name="visualization" value="true" />
     </node>
 
-
+    <!-- Motion Renderer -->
     <node name="motion_renderer" type="motion_renderer.py" pkg="motion_renderer" output="screen" />
-
     <include file="$(find motion_renderer)/launch/bringup_renderer.launch">
         <arg name="fake_render_speech" value="$(arg fake_render_speech)" />
         <arg name="fake_render_gesture" value="$(arg fake_render_gesture)" />
@@ -40,7 +41,9 @@
         <arg name="fake_render_mobility" value="$(arg fake_render_mobility)" />
     </include>
 
-    <node name="gaze" type="gaze_node.py" pkg="behaviors" output="screen" if="$(arg gaze)">
+    <!-- Reflex Behaviors -->
+    <node name="gaze_planner" type="gaze_planner.py" pkg="reflex_behaviors" output="screen" if="$(arg gaze)">
         <param name="default_height" value="$(arg gaze_default_height)" />
     </node>
+    <node name="turn_detector" type="turn_detector.py" pkg="reflex_behaviors" output="screen" />
 </launch>

@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-    <name>behaviors</name>
+    <name>reflex_behaviors</name>
     <version>0.0.0</version>
-    <description>The behaviors package</description>
+    <description>The reflex_behaviors package</description>
 
     <author email="byeongkyu@gmail.com">Byeong-Kyu Ahn</author>
     <maintainer email="byeongkyu@gmail.com">Byeong-Kyu Ahn</maintainer>
