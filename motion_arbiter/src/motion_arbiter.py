@@ -123,22 +123,13 @@ class MotionArbiter:
         self.pub_empty_queue = rospy.Publisher('scene_queue_empty', String, queue_size=10)
         self.pub_log_item = rospy.Publisher('log', LogItem, queue_size=10)
 
-        self.pub_start_speech_recognizer = rospy.Publisher('sp_speech_recognizer/start', Empty, queue_size=1)
-        self.pub_stop_speech_recognizer = rospy.Publisher('sp_speech_recognizer/stop', Empty, queue_size=1)
-
-        self.pub_start_robot_speech = rospy.Publisher('robot_speech/start', Empty, queue_size=1)
-        self.pub_stop_robot_speech = rospy.Publisher('robot_speech/stop', Empty, queue_size=1)
-
-        self.is_speaking_started = False
-        rospy.Subscriber('start_of_speech', Empty, self.handle_start_of_speech)
-        rospy.Subscriber('end_of_speech', Empty, self.handle_end_of_speech)
+        self.is_notified_saying_started = False
+        self.is_notified_saying_done = False
+        self.pub_robot_is_saying = rospy.Publisher('robot_is_saying', Bool, queue_size=10)
 
         # rospy.Subscriber('emotion_status', EmotionStatus, self.handle_emotion_status, queue_size=10)
         # self.current_emotion = 'neutral'
         # self.current_emotion_intensity = 1.0
-
-        self.pub_set_idle_motion = rospy.Publisher('idle_motion/set_enabled', Bool, queue_size=10)
-        self.pub_set_idle_motion.publish(True)
 
         self.scene_queue = Queue.Queue(MAX_QUEUE_SIZE)
         self.scene_handle_thread = Thread(target=self.handle_scene_queue)
@@ -174,12 +165,6 @@ class MotionArbiter:
         self.plot_to_matplotlib(self.plot_item.get_plot_data())
         self.fig.canvas.draw()
         plt.pause(0.001)
-
-    def handle_start_of_speech(self, msg):
-        self.is_speaking_started = True
-
-    def handle_end_of_speech(self, msg):
-        self.is_speaking_started = False
 
     def handle_reply_analyzed(self, msg):
         reply_list = []
@@ -344,6 +329,12 @@ class MotionArbiter:
 
         while not rospy.is_shutdown():
             if not self.scene_queue.empty():
+                if not self.is_notified_saying_started:
+                    self.is_notified_saying_started = True
+                    self.is_notified_saying_done = False
+                    self.pub_robot_is_saying.publish(True)
+                    rospy.sleep(0.2)
+
                 goal = RenderSceneGoal()
                 scene_dict = {}
                 scene_item = self.scene_queue.get()
@@ -441,8 +432,6 @@ class MotionArbiter:
                 scene_dict['emotion']['current_emotion'] = 'neutral'
                 scene_dict['emotion']['intensity'] = 1.0
 
-                self.pub_set_idle_motion.publish(False)
-
                 goal.render_scene = json.dumps(scene_dict)
                 self.renderer_client.send_goal(goal, done_cb=self.render_done, feedback_cb=self.render_feedback, active_cb=self.render_active)
                 self.is_rendering = True
@@ -452,15 +441,14 @@ class MotionArbiter:
                     rospy.sleep(0.1)
             else:
                 rospy.sleep(0.2)
-
-            self.pub_set_idle_motion.publish(True)
-            scene_item = {}
+                if not self.is_notified_saying_done:
+                    self.is_notified_saying_done = True
+                    self.is_notified_saying_started = False
+                    self.pub_robot_is_saying.publish(False)
 
     def render_active(self):
         rospy.loginfo('\033[91m[%s]\033[0m scene rendering started...'%rospy.get_name())
         self.is_rendering = True
-        self.pub_stop_speech_recognizer.publish()
-        self.pub_start_robot_speech.publish()
 
     def render_feedback(self, feedback):
         rospy.loginfo('\033[91m[%s]\033[0m scene rendering feedback...'%rospy.get_name())
@@ -468,16 +456,7 @@ class MotionArbiter:
     def render_done(self, state, result):
         rospy.loginfo('\033[91m[%s]\033[0m scene rendering done...'%rospy.get_name())
         self.is_rendering = False
-
-        if self.scene_queue.empty():
-            self.pub_empty_queue.publish(json.dumps('{}'))
-
         rospy.sleep(0.2)
-        self.pub_start_speech_recognizer.publish()
-        self.pub_stop_robot_speech.publish()
-
-
-
 
 
 if __name__ == '__main__':
