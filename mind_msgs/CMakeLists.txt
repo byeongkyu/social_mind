@@ -55,6 +55,7 @@ add_message_files(
   GazeCommand.msg
   ReplyAnalyzed.msg
   EntitiesIndex.msg
+  SetIdleMotion.msg
 )
 
 ## Generate services in the 'srv' folder
