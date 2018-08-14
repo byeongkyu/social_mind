@@ -28,7 +28,7 @@ class TurnDetectorNode:
     def handle_robot_is_saying(self, msg):
         if msg.data:    
             # Robot started saying
-            rospy.loginfo('\033[92m[%s]\033[0m Robot\'s Turn...')
+            rospy.loginfo('\033[92m[%s]\033[0m Robot\'s Turn...'%rospy.get_name())
             
             msg = SetIdleMotion()
             msg.enabled = False
@@ -38,13 +38,14 @@ class TurnDetectorNode:
             self.pub_stop_speech_recognition.publish()
         else:           
             # Robot completed saying
-            rospy.loginfo('\033[92m[%s]\033[0m User\'s Turn...')
+            rospy.loginfo('\033[92m[%s]\033[0m User\'s Turn...'%rospy.get_name())
 
             msg = SetIdleMotion()
             msg.enabled = True
             msg.with_leaning_forward = True
 
             self.pub_set_idle_motion.publish(msg)
+            rospy.sleep(0.5)
             self.pub_start_speech_recognition.publish()
 
 
