@@ -10,8 +10,8 @@ class TurnDetectorNode:
         rospy.Subscriber('raising_events', RaisingEvents, self.handle_raising_events)
         rospy.Subscriber('robot_is_saying', Bool, self.handle_robot_is_saying)
 
-        self.pub_start_speech_recognition = rospy.Publisher('sp_speech_recognizer/start', Empty, queue_size=1)
-        self.pub_stop_speech_recognition = rospy.Publisher('sp_speech_recognizer/stop', Empty, queue_size=1)
+        self.pub_start_speech_recognition = rospy.Publisher('sp_speech_recognizer/start', Empty, queue_size=10)
+        self.pub_stop_speech_recognition = rospy.Publisher('sp_speech_recognizer/stop', Empty, queue_size=10)
 
         self.pub_set_idle_motion = rospy.Publisher('set_enable_idle_motion', SetIdleMotion, queue_size=10)
 
@@ -26,17 +26,17 @@ class TurnDetectorNode:
         pass
 
     def handle_robot_is_saying(self, msg):
-        if msg.data:    
+        if msg.data:
             # Robot started saying
             rospy.loginfo('\033[92m[%s]\033[0m Robot\'s Turn...'%rospy.get_name())
-            
+
             msg = SetIdleMotion()
             msg.enabled = False
             msg.with_leaning_forward = False
 
             self.pub_set_idle_motion.publish(msg)
             self.pub_stop_speech_recognition.publish()
-        else:           
+        else:
             # Robot completed saying
             rospy.loginfo('\033[92m[%s]\033[0m User\'s Turn...'%rospy.get_name())
 
@@ -45,7 +45,7 @@ class TurnDetectorNode:
             msg.with_leaning_forward = True
 
             self.pub_set_idle_motion.publish(msg)
-            rospy.sleep(0.5)
+            rospy.sleep(0.4)
             self.pub_start_speech_recognition.publish()
 
 

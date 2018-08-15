@@ -206,7 +206,7 @@ class MotionArbiter:
                 scene_item.say['render'] = reply_text.strip()
 
                 if reply[2] == 'GREETING':
-                    scene_item.say['offset'] = float(int(reply[1]) / SIZE_FOR_CHARACTER * TIME_FOR_CHARACTER)
+                    scene_item.say['offset'] = float(int(reply[1]) / SIZE_FOR_CHARACTER * TIME_FOR_CHARACTER) / 2.0
                 else:
                     scene_item.say['offset'] = 0.0
 
