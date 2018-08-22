@@ -45,7 +45,7 @@ class TurnDetectorNode:
             msg.with_leaning_forward = True
 
             self.pub_set_idle_motion.publish(msg)
-            rospy.sleep(0.4)
+            rospy.sleep(0.1)
             self.pub_start_speech_recognition.publish()
 
 

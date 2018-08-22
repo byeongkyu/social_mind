@@ -198,6 +198,9 @@ class MotionArbiter:
                     elif tag_type == 'gaze':
                         scene_item.gaze['render'] = tag_content
                         scene_item.gaze['offset'] = 0.0 #TBD
+                    elif tag_type == 'pointing':
+                        scene_item.pointing['render'] = tag_content
+                        scene_item.pointing['offset'] = 0.0
 
             scene_item.sm['render'] = 'tag:' + reply[2].lower()
             scene_item.sm['offset'] = 0.0 #TBD
@@ -205,10 +208,11 @@ class MotionArbiter:
             if reply_text.strip() != '':
                 scene_item.say['render'] = reply_text.strip()
 
-                if reply[2] == 'GREETING':
-                    scene_item.say['offset'] = float(int(reply[1]) / SIZE_FOR_CHARACTER * TIME_FOR_CHARACTER) / 2.0
-                else:
-                    scene_item.say['offset'] = 0.0
+                if scene_item.sm['render'] != '':
+                    if reply[2] == 'GREETING':
+                        scene_item.say['offset'] = float(int(reply[1]) / SIZE_FOR_CHARACTER * TIME_FOR_CHARACTER) / 2.0
+                    else:
+                        scene_item.say['offset'] = 0.0
 
             self.scene_queue.put(scene_item)
 
@@ -357,13 +361,13 @@ class MotionArbiter:
                         response = self.rd_memory['environmental_memory'](req)
 
                         if response.result:
-                            rospy.logdebug("read from social_mind for %s: %s"%(target_data[1], response.data))
+                            rospy.loginfo("read from social_mind for %s: %s"%(target_data[1], response.data))
                             # scene_item.pointing['render'] = 'pointing=' + response.data
                             scene_dict['sm'] = {}
                             scene_dict['sm']['render'] = 'pointing=' + response.data
                             scene_dict['sm']['offset'] = scene_item.pointing['offset']
                         else:
-                            rospy.logwarn("Can't find the information if %s"%target_data[1])
+                            rospy.logwarn("Can't find the information about the %s"%target_data[1])
                             scene_dict['sm'] = {'render': 'gesture=tag:neutral', 'offset': scene_item.pointing['offset']}
 
                     except rospy.ServiceException, e:
