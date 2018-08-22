@@ -180,14 +180,14 @@ class MotionArbiter:
 
         # Generate Timeline for each reply
         for reply in reply_list:
-            reply_tags = re.findall('({[^}]+})', reply[0])
-            reply_text = re.sub('({[^}]+})', '', reply[0]).strip()
+            reply_tags = re.findall('(%[^}]+%)', reply[0])
+            reply_text = re.sub('(%[^}]+%)', '', reply[0]).strip()
 
             scene_item = SceneQueueData()
             scene_item.br['time'] = 0
 
             if len(reply_tags) > 0:
-                for tag in reply_tags[0].strip('{}').split('|'):
+                for tag in reply_tags[0].strip('%%').split('|'):
                     tag = tag.split('=')
                     tag_type = tag[0].strip().lower()
                     tag_content = tag[1].strip().lower()

@@ -51,8 +51,8 @@ class SentenceClassifier:
 
         for sent in sents:
             # sperate tags and text
-            sent_tags = re.findall('({[^}]+})', sent)
-            sent_text = re.sub('({[^}]+})', '', sent).strip()
+            sent_tags = re.findall('(%[^}]+%)', sent)
+            sent_text = re.sub('(%[^}]+%)', '', sent).strip()
 
             # if task manager select intent we use it, or we use classifier for select intent
             result = ''
